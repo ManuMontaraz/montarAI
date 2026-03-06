@@ -1,0 +1,160 @@
+{
+  "auth": {
+    "error": {
+      "account_not_found": "Account not found",
+      "invalid_credentials": "Invalid credentials",
+      "email_already_exists": "Email already registered",
+      "account_not_verified": "Please verify your email before logging in",
+      "account_inactive": "Account deactivated. Contact support to reactivate",
+      "account_banned": "Account suspended for terms violation",
+      "token_invalid": "Invalid token",
+      "token_expired": "Token expired",
+      "password_incorrect": "Incorrect password",
+      "password_same": "New password must be different from current",
+      "logout_failed": "Error logging out"
+    },
+    "ok": {
+      "account_created": "User registered. Please verify your email",
+      "email_verified": "Email verified successfully. You can now log in",
+      "login_success": "Login successful",
+      "logout_success": "Logged out successfully",
+      "password_changed": "Password updated successfully",
+      "profile_updated": "Profile updated successfully",
+      "email_change_requested": "Verification email sent to your new address",
+      "email_changed": "Email updated successfully",
+      "account_deactivated": "Account deactivated successfully",
+      "password_reset_sent": "If the email exists, you will receive a password reset link",
+      "password_reset_success": "Password reset successfully"
+    }
+  },
+  "validation": {
+    "error": {
+      "required": "This field is required",
+      "invalid_email": "Invalid email",
+      "min_length": "Must be at least {min} characters",
+      "max_length": "Must be less than {max} characters",
+      "invalid_format": "Invalid format"
+    }
+  },
+  "orders": {
+    "error": {
+      "not_found": "Order not found",
+      "not_authorized": "You don't have permission to view this order",
+      "already_refunded": "This order has already been refunded",
+      "refund_pending": "A refund request is already pending",
+      "cannot_refund": "Only paid or delivered orders can be refunded"
+    },
+    "ok": {
+      "refund_requested": "Refund request submitted successfully"
+    }
+  },
+  "addresses": {
+    "error": {
+      "not_found": "Address not found",
+      "invalid_postal_code": "Invalid postal code"
+    },
+    "ok": {
+      "created": "Address created successfully",
+      "updated": "Address updated successfully",
+      "deleted": "Address deleted successfully",
+      "default_set": "Default address updated"
+    }
+  },
+  "admin": {
+    "error": {
+      "order_not_found": "Order not found",
+      "user_not_found": "User not found",
+      "cannot_modify_admin": "Cannot modify administrator status",
+      "invalid_status": "Invalid status"
+    },
+    "ok": {
+      "order_updated": "Order status updated",
+      "user_updated": "User status updated",
+      "refund_approved": "Refund approved and processed successfully",
+      "refund_rejected": "Refund request rejected"
+    }
+  },
+  "stripe": {
+    "error": {
+      "products_fetch": "Error fetching products",
+      "product_fetch": "Error fetching product",
+      "payment_intent": "Error processing payment",
+      "cart_empty": "Cart is empty",
+      "invalid_address": "Invalid shipping address"
+    },
+    "ok": {
+      "payment_intent_created": "PaymentIntent created successfully"
+    }
+  },
+  "mail": {
+    "verify_email": {
+      "subject": "Verify your {appName} account",
+      "salute": "Welcome to {appName}",
+      "body": "Please verify your account by clicking the following link:",
+      "button": "Verify account",
+      "fallback": "Or copy and paste this link:"
+    },
+    "reset_password": {
+      "subject": "Password recovery - {appName}",
+      "salute": "Hi {firstName},",
+      "body": "You have requested to reset your password. Click the following link:",
+      "button": "Reset password",
+      "expires": "This link will expire in 1 hour.",
+      "ignore": "If you didn't request this, please ignore this email."
+    },
+    "order_confirmation": {
+      "subject": "Order confirmation #{orderId} - {appName}",
+      "title": "Thank you for your purchase!",
+      "body": "Your order has been confirmed successfully.",
+      "order_details": "Order details:",
+      "order_number": "Order number:",
+      "total": "Total:",
+      "date": "Date:",
+      "shipping_notice": "We will send you an email when your order is shipped."
+    },
+    "refund": {
+      "subject": "Refund process initiated - {appName}",
+      "salute": "Hi {firstName},",
+      "body": "The refund process has been initiated for your order #{orderId}.",
+      "timeline": "The refund will be processed within the next 5-10 business days.",
+      "amount": "Refund amount:"
+    },
+    "refund_rejected": {
+      "subject": "Refund request rejected - {appName}",
+      "salute": "Hi {firstName},",
+      "body": "Your refund request for order #{orderId} has been rejected.",
+      "reason": "Reason:",
+      "contact": "If you have any questions, please contact our support team."
+    },
+    "account_status": {
+      "banned_subject": "Your account has been suspended - {appName}",
+      "banned_body": "Your account has been suspended. If you believe this is an error, please contact support.",
+      "inactive_subject": "Your account has been deactivated - {appName}",
+      "inactive_body": "Your account has been deactivated.",
+      "active_subject": "Your account has been reactivated - {appName}",
+      "active_body": "Your account has been reactivated. You can now log in again."
+    },
+    "footer": {
+      "social_title": "Follow us on:",
+      "company_info": "{companyName} - {companyAddress}",
+      "contact": "Contact: {companyPhone} | {supportEmail}",
+      "legal_links": "Legal links:",
+      "terms": "Terms and conditions",
+      "privacy": "Privacy policy",
+      "legal": "Legal notice",
+      "cookies": "Cookie policy"
+    }
+  },
+  "general": {
+    "error": {
+      "server_error": "Internal server error",
+      "unauthorized": "Unauthorized",
+      "forbidden": "Access denied",
+      "not_found": "Resource not found",
+      "bad_request": "Invalid request"
+    },
+    "ok": {
+      "success": "Operation successful"
+    }
+  }
+}

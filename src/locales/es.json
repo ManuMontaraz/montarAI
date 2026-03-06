@@ -1,0 +1,160 @@
+{
+  "auth": {
+    "error": {
+      "account_not_found": "Cuenta no encontrada",
+      "invalid_credentials": "Credenciales inválidas",
+      "email_already_exists": "El email ya está registrado",
+      "account_not_verified": "Por favor verifica tu email antes de iniciar sesión",
+      "account_inactive": "Cuenta desactivada. Contacta con soporte para reactivarla",
+      "account_banned": "Cuenta suspendida por violación de términos",
+      "token_invalid": "Token inválido",
+      "token_expired": "Token expirado",
+      "password_incorrect": "Contraseña incorrecta",
+      "password_same": "La nueva contraseña debe ser diferente a la actual",
+      "logout_failed": "Error al cerrar sesión"
+    },
+    "ok": {
+      "account_created": "Usuario registrado. Por favor verifica tu email",
+      "email_verified": "Email verificado correctamente. Ya puedes iniciar sesión",
+      "login_success": "Login exitoso",
+      "logout_success": "Sesión cerrada correctamente",
+      "password_changed": "Contraseña actualizada correctamente",
+      "profile_updated": "Perfil actualizado correctamente",
+      "email_change_requested": "Se ha enviado un email de verificación a tu nueva dirección",
+      "email_changed": "Email actualizado correctamente",
+      "account_deactivated": "Cuenta desactivada correctamente",
+      "password_reset_sent": "Si el email existe, recibirás un enlace para restablecer tu contraseña",
+      "password_reset_success": "Contraseña restablecida correctamente"
+    }
+  },
+  "validation": {
+    "error": {
+      "required": "Este campo es obligatorio",
+      "invalid_email": "Email inválido",
+      "min_length": "Debe tener al menos {min} caracteres",
+      "max_length": "Debe tener menos de {max} caracteres",
+      "invalid_format": "Formato inválido"
+    }
+  },
+  "orders": {
+    "error": {
+      "not_found": "Pedido no encontrado",
+      "not_authorized": "No tienes permiso para ver este pedido",
+      "already_refunded": "Este pedido ya ha sido reembolsado",
+      "refund_pending": "Ya existe una solicitud de devolución pendiente",
+      "cannot_refund": "Solo se pueden solicitar devoluciones de pedidos pagados o entregados"
+    },
+    "ok": {
+      "refund_requested": "Solicitud de devolución enviada correctamente"
+    }
+  },
+  "addresses": {
+    "error": {
+      "not_found": "Dirección no encontrada",
+      "invalid_postal_code": "Código postal inválido"
+    },
+    "ok": {
+      "created": "Dirección creada correctamente",
+      "updated": "Dirección actualizada correctamente",
+      "deleted": "Dirección eliminada correctamente",
+      "default_set": "Dirección por defecto actualizada"
+    }
+  },
+  "admin": {
+    "error": {
+      "order_not_found": "Pedido no encontrado",
+      "user_not_found": "Usuario no encontrado",
+      "cannot_modify_admin": "No se puede modificar el estado de un administrador",
+      "invalid_status": "Estado inválido"
+    },
+    "ok": {
+      "order_updated": "Estado del pedido actualizado",
+      "user_updated": "Estado del usuario actualizado",
+      "refund_approved": "Devolución aprobada y procesada correctamente",
+      "refund_rejected": "Solicitud de devolución rechazada"
+    }
+  },
+  "stripe": {
+    "error": {
+      "products_fetch": "Error obteniendo productos",
+      "product_fetch": "Error obteniendo producto",
+      "payment_intent": "Error procesando el pago",
+      "cart_empty": "El carrito está vacío",
+      "invalid_address": "Dirección de envío no válida"
+    },
+    "ok": {
+      "payment_intent_created": "PaymentIntent creado correctamente"
+    }
+  },
+  "mail": {
+    "verify_email": {
+      "subject": "Verifica tu cuenta de {appName}",
+      "salute": "Bienvenido a {appName}",
+      "body": "Por favor verifica tu cuenta haciendo clic en el siguiente enlace:",
+      "button": "Verificar cuenta",
+      "fallback": "O copia y pega este enlace:"
+    },
+    "reset_password": {
+      "subject": "Recuperación de contraseña - {appName}",
+      "salute": "Hola {firstName},",
+      "body": "Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace:",
+      "button": "Restablecer contraseña",
+      "expires": "Este enlace expirará en 1 hora.",
+      "ignore": "Si no solicitaste esto, ignora este email."
+    },
+    "order_confirmation": {
+      "subject": "Confirmación de pedido #{orderId} - {appName}",
+      "title": "¡Gracias por tu compra!",
+      "body": "Tu pedido ha sido confirmado correctamente.",
+      "order_details": "Detalles del pedido:",
+      "order_number": "Número de pedido:",
+      "total": "Total:",
+      "date": "Fecha:",
+      "shipping_notice": "Te enviaremos un email cuando tu pedido sea enviado."
+    },
+    "refund": {
+      "subject": "Proceso de devolución iniciado - {appName}",
+      "salute": "Hola {firstName},",
+      "body": "Se ha iniciado el proceso de devolución para tu pedido #{orderId}.",
+      "timeline": "El reembolso se procesará en los próximos 5-10 días hábiles.",
+      "amount": "Importe reembolsado:"
+    },
+    "refund_rejected": {
+      "subject": "Solicitud de devolución rechazada - {appName}",
+      "salute": "Hola {firstName},",
+      "body": "Tu solicitud de devolución para el pedido #{orderId} ha sido rechazada.",
+      "reason": "Motivo:",
+      "contact": "Si tienes alguna duda, contacta con nuestro equipo de soporte."
+    },
+    "account_status": {
+      "banned_subject": "Tu cuenta ha sido suspendida - {appName}",
+      "banned_body": "Tu cuenta ha sido suspendida. Si crees que esto es un error, contacta con soporte.",
+      "inactive_subject": "Tu cuenta ha sido desactivada - {appName}",
+      "inactive_body": "Tu cuenta ha sido desactivada.",
+      "active_subject": "Tu cuenta ha sido reactivada - {appName}",
+      "active_body": "Tu cuenta ha sido reactivada. Ya puedes iniciar sesión nuevamente."
+    },
+    "footer": {
+      "social_title": "Síguenos en:",
+      "company_info": "{companyName} - {companyAddress}",
+      "contact": "Contacto: {companyPhone} | {supportEmail}",
+      "legal_links": "Enlaces legales:",
+      "terms": "Términos y condiciones",
+      "privacy": "Política de privacidad",
+      "legal": "Aviso legal",
+      "cookies": "Política de cookies"
+    }
+  },
+  "general": {
+    "error": {
+      "server_error": "Error interno del servidor",
+      "unauthorized": "No autorizado",
+      "forbidden": "Acceso denegado",
+      "not_found": "Recurso no encontrado",
+      "bad_request": "Solicitud inválida"
+    },
+    "ok": {
+      "success": "Operación exitosa"
+    }
+  }
+}
