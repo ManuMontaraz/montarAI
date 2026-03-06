@@ -108,23 +108,92 @@ const getMe = async (req, res) => {
   }
 };
 
+const generateVerifyEmailHtml = (title, message, isSuccess, closeMessage) => {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        h1 { color: #333; margin-bottom: 20px; }
+        p { color: #666; margin-bottom: 30px; }
+        .close-hint {
+            font-size: 14px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon ${isSuccess ? 'success' : 'error'}">${isSuccess ? '✓' : '✗'}</div>
+        <h1>${title}</h1>
+        <p>${message}</p>
+        <p class="close-hint">${closeMessage}</p>
+    </div>
+</body>
+</html>`;
+};
+
 const verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
 
     const user = await User.findOne({ where: { verificationToken: token } });
     if (!user) {
-      return res.status(400).json(req.t('auth.error.token_invalid'));
+      const html = generateVerifyEmailHtml(
+        req.t('auth.verify_email_page.error_title').message,
+        req.t('auth.error.token_invalid').message,
+        false,
+        req.t('auth.verify_email_page.close_message').message
+      );
+      return res.status(400).send(html);
     }
 
     user.isVerified = true;
     user.verificationToken = null;
     await user.save();
 
-    res.json(req.t('auth.ok.email_verified'));
+    const html = generateVerifyEmailHtml(
+      req.t('auth.verify_email_page.success_title').message,
+      req.t('auth.ok.email_verified').message,
+      true,
+      req.t('auth.verify_email_page.close_message').message
+    );
+    res.send(html);
   } catch (error) {
     console.error('Error verificando email:', error);
-    res.status(500).json(req.t('general.error.server_error'));
+    const html = generateVerifyEmailHtml(
+      req.t('auth.verify_email_page.error_title').message,
+      req.t('general.error.server_error').message,
+      false,
+      req.t('auth.verify_email_page.close_message').message
+    );
+    res.status(500).send(html);
   }
 };
 

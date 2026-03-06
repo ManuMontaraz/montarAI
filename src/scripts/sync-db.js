@@ -1,6 +1,6 @@
 require('dotenv').config();
-const sequelize = require('./config/database');
-const { User, Address, Order } = require('./models');
+const sequelize = require('../config/database');
+const { User, Address, Order } = require('../models');
 
 const syncDatabase = async () => {
   try {

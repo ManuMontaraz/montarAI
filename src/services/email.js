@@ -126,7 +126,7 @@ const sendEmail = async ({ to, subject, html, lang = 'en' }) => {
 };
 
 const sendVerificationEmail = async (email, token, lang = 'en', user = {}) => {
-  const verificationUrl = `${appConfig.url}/verify-email?token=${token}`;
+  const verificationUrl = `${appConfig.url}/api/auth/verify-email?token=${token}`;
   
   const content = `
     <h1 style="color: ${appConfig.branding.primaryColor};">${translate('mail.verify_email.salute', lang)}</h1>

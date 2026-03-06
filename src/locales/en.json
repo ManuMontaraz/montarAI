@@ -25,6 +25,12 @@
       "account_deactivated": "Account deactivated successfully",
       "password_reset_sent": "If the email exists, you will receive a password reset link",
       "password_reset_success": "Password reset successfully"
+    },
+    "verify_email_page": {
+      "title": "Email Verification",
+      "success_title": "Email Verified Successfully",
+      "error_title": "Verification Failed",
+      "close_message": "You can close this tab"
     }
   },
   "validation": {

@@ -25,6 +25,12 @@
       "account_deactivated": "Cuenta desactivada correctamente",
       "password_reset_sent": "Si el email existe, recibirás un enlace para restablecer tu contraseña",
       "password_reset_success": "Contraseña restablecida correctamente"
+    },
+    "verify_email_page": {
+      "title": "Verificación de Email",
+      "success_title": "Email Verificado Correctamente",
+      "error_title": "Verificación Fallida",
+      "close_message": "Puedes cerrar esta pestaña"
     }
   },
   "validation": {
