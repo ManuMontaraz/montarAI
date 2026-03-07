@@ -323,7 +323,69 @@ Base URL: `http://localhost:3000/api`
 
 Todos los endpoints protegidos requieren header:
 ```
-Authorization: Bearer <token_jwt>
+Authorization: Bearer <access_token>
+```
+
+#### Flujo de Autenticación con Refresh Tokens
+
+El sistema utiliza ** JWT con Refresh Tokens ** para una autenticación segura:
+
+** Tokens: **
+- ** Access Token **: Válido por 15 minutos. Se usa en el header `Authorization` para todas las peticiones API.
+- ** Refresh Token **: Válido por 30 días. Se usa solo para obtener nuevos access tokens.
+
+** Flujo: **
+
+1. ** Login ** → Recibes `accessToken` + `refreshToken`
+2. ** API Calls ** → Usa `accessToken` en el header
+3. ** Token expirado(401) ** → Llama a `/auth/refresh-token` con el `refreshToken`
+4. ** Recibir nuevos tokens ** → Actualiza el storage y reintenta la petición
+5. ** Logout ** → Invalida el refresh token
+
+** Características de seguridad: **
+- ** Rotación de tokens **: Cada renovación genera nuevos access + refresh tokens
+- ** Logout global **: Posibilidad de cerrar sesión en todos los dispositivos
+- ** Invalidación server - side **: Los refresh tokens se guardan en la base de datos
+
+** Implementación Frontend(Recomendada): **
+
+```javascript
+// Almacenar tokens después del login
+localStorage.setItem('accessToken', response.accessToken);
+localStorage.setItem('refreshToken', response.refreshToken);
+localStorage.setItem('expiresAt', Date.now() + response.expiresIn * 1000);
+
+// Interceptor para renovación automática
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refreshToken');
+      
+      try {
+        const response = await axios.post('/api/auth/refresh-token', {
+          refreshToken
+        });
+        
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        localStorage.setItem('expiresAt', Date.now() + response.data.expiresIn * 1000);
+        
+        originalRequest.headers['Authorization'] = 'Bearer ' + response.data.accessToken;
+        return axios(originalRequest);
+      } catch (refreshError) {
+        // Refresh falló - redirigir a login
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
 ```
 
 #### POST /auth/register
@@ -354,7 +416,7 @@ Registra un nuevo usuario.
 ```
 
 #### POST /auth/login
-Inicia sesión y devuelve token JWT.
+Inicia sesión y devuelve access token y refresh token.
 
 **Body:**
 ```json
@@ -368,13 +430,61 @@ Inicia sesión y devuelve token JWT.
 ```json
 {
   "message": "Login exitoso",
-  "token": "jwt_token_aqui",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 900,
   "user": {
     "id": "uuid",
     "email": "usuario@ejemplo.com",
     "firstName": "Juan",
     "role": "customer"
   }
+}
+```
+
+#### POST /auth/refresh-token
+Renueva el access token usando el refresh token. Implementa rotación de tokens (nuevo refresh token en cada renovación).
+
+**Body:**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Response:**
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 900
+}
+```
+
+**Errores:**
+- `401`: Token inválido, expirado o sesión cerrada en todos los dispositivos
+
+#### POST /auth/logout (Requiere Auth)
+Cierra la sesión actual invalidando el refresh token.
+
+**Response:**
+```json
+{
+  "key": "auth.ok.logout_success",
+  "message": "Sesión cerrada correctamente",
+  "lang": "es"
+}
+```
+
+#### POST /auth/logout-all-devices (Requiere Auth)
+Cierra la sesión en todos los dispositivos incrementando el tokenVersion. Todos los refresh tokens existentes quedan invalidados.
+
+**Response:**
+```json
+{
+  "key": "auth.ok.logout_all_success",
+  "message": "Sesión cerrada en todos los dispositivos",
+  "lang": "es"
 }
 ```
 
@@ -610,6 +720,9 @@ DB_PASSWORD=tu_password_seguro_aqui
 DB_NAME=montarai_backend_prod
 
 JWT_SECRET=genera_un_secreto_largo_y_aleatorio_de_64_caracteres
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=30d
+REFRESH_TOKEN_SECRET=otro_secreto_diferente_para_refresh_tokens
 
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587

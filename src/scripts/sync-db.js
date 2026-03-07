@@ -4,9 +4,10 @@ const { User, Address, Order } = require('../models');
 
 const syncDatabase = async () => {
   try {
-    await sequelize.sync({ force: true });
+    // Usar alter: true para actualizar tablas sin borrar datos
+    await sequelize.sync({ alter: true });
     console.log('✅ Base de datos sincronizada correctamente');
-    console.log('📊 Tablas creadas: users, addresses, orders');
+    console.log('📊 Tablas actualizadas: users, addresses, orders');
     process.exit(0);
   } catch (error) {
     console.error('❌ Error sincronizando base de datos:', error);

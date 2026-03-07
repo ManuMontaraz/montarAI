@@ -27,4 +27,9 @@ router.post('/change-email', authenticate, changeEmailValidation, handleValidati
 router.get('/verify-new-email', authController.verifyEmailChange);
 router.post('/deactivate', authenticate, authController.deactivateAccount);
 
+// Refresh Token endpoints
+router.post('/refresh-token', authController.refreshToken);
+router.post('/logout', authenticate, authController.logout);
+router.post('/logout-all-devices', authenticate, authController.logoutAllDevices);
+
 module.exports = router;

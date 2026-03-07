@@ -11,7 +11,13 @@
       "token_expired": "Token expirado",
       "password_incorrect": "Contraseña incorrecta",
       "password_same": "La nueva contraseña debe ser diferente a la actual",
-      "logout_failed": "Error al cerrar sesión"
+      "logout_failed": "Error al cerrar sesión",
+      "token_not_provided": "Token no proporcionado",
+      "user_not_found": "Usuario no encontrado",
+      "access_denied": "Acceso denegado. Se requiere rol de administrador",
+      "invalid_refresh_token": "Token de sesión inválido",
+      "refresh_token_expired": "La sesión ha expirado, inicia sesión nuevamente",
+      "session_invalidated": "Sesión cerrada en todos los dispositivos"
     },
     "ok": {
       "account_created": "Usuario registrado. Por favor verifica tu email",
@@ -24,7 +30,8 @@
       "email_changed": "Email actualizado correctamente",
       "account_deactivated": "Cuenta desactivada correctamente",
       "password_reset_sent": "Si el email existe, recibirás un enlace para restablecer tu contraseña",
-      "password_reset_success": "Contraseña restablecida correctamente"
+      "password_reset_success": "Contraseña restablecida correctamente",
+      "logout_all_success": "Sesión cerrada en todos los dispositivos"
     },
     "verify_email_page": {
       "title": "Verificación de Email",

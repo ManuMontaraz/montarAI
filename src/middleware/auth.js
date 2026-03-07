@@ -6,7 +6,7 @@ const authenticate = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Token no proporcionado' });
+      return res.status(401).json(req.t('auth.error.token_not_provided'));
     }
 
     const token = authHeader.substring(7);
@@ -15,30 +15,30 @@ const authenticate = async (req, res, next) => {
     // Verificar estado de la cuenta
     const user = await User.findByPk(decoded.userId);
     if (!user) {
-      return res.status(401).json({ message: 'Usuario no encontrado' });
+      return res.status(401).json(req.t('auth.error.user_not_found'));
     }
 
     if (user.status === 'inactive') {
-      return res.status(403).json({ message: 'Cuenta desactivada. Contacta con soporte.' });
+      return res.status(403).json(req.t('auth.error.account_inactive'));
     }
 
     if (user.status === 'banned') {
-      return res.status(403).json({ message: 'Cuenta suspendida por violación de términos.' });
+      return res.status(403).json(req.t('auth.error.account_banned'));
     }
     
     req.user = decoded;
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ message: 'Token expirado' });
+      return res.status(401).json(req.t('auth.error.token_expired'));
     }
-    return res.status(401).json({ message: 'Token inválido' });
+    return res.status(401).json(req.t('auth.error.token_invalid'));
   }
 };
 
 const requireAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Acceso denegado. Se requiere rol de administrador' });
+    return res.status(403).json(req.t('auth.error.access_denied'));
   }
   next();
 };

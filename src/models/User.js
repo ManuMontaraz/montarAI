@@ -75,6 +75,22 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     allowNull: true,
     field: 'reset_password_expires'
+  },
+  refreshToken: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'refresh_token'
+  },
+  refreshTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'refresh_token_expires'
+  },
+  tokenVersion: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+    field: 'token_version'
   }
 }, {
   tableName: 'users',

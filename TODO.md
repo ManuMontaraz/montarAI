@@ -97,6 +97,17 @@
 - [x] Implementar helper para redes sociales condicionales
 - [x] Actualizar README.md con documentación completa
 
+## FASE 14: Sistema de Refresh Tokens (JWT)
+- [x] Actualizar .env con JWT_ACCESS_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN, REFRESH_TOKEN_SECRET
+- [x] Modificar modelo User (añadir refreshToken, refreshTokenExpires, tokenVersion)
+- [x] Actualizar src/utils/auth.js (generar/verificar access y refresh tokens separados)
+- [x] Modificar POST /login para devolver accessToken + refreshToken
+- [x] Crear POST /refresh-token endpoint (con rotación de tokens)
+- [x] Modificar POST /logout para invalidar refresh token
+- [x] Crear POST /logout-all-devices endpoint (incrementar tokenVersion)
+- [x] Añadir traducciones para nuevos mensajes de error y éxito
+- [x] Actualizar rutas en src/routes/auth.js
+
 ## DEPLOY (Documentación completa en README.md)
 - [x] Guía de despliegue Debian + Apache
 - [x] Configuración PM2 para producción

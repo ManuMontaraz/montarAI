@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const { generateToken, hashPassword, comparePassword } = require('../utils/auth');
+const { generateAccessToken, generateRefreshToken, verifyRefreshToken, hashPassword, comparePassword } = require('../utils/auth');
 const { generateToken: generateVerificationToken } = require('../utils/token');
 const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/email');
 
@@ -68,15 +68,28 @@ const login = async (req, res) => {
       return res.status(403).json(req.t('auth.error.account_banned'));
     }
 
-    const token = generateToken({
+    // Generar tokens
+    const accessToken = generateAccessToken({
       userId: user.id,
       email: user.email,
       role: user.role
     });
 
+    const refreshToken = generateRefreshToken({
+      userId: user.id,
+      tokenVersion: user.tokenVersion
+    });
+
+    // Guardar refresh token en DB
+    user.refreshToken = refreshToken;
+    user.refreshTokenExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
+    await user.save();
+
     res.json({
       ...req.t('auth.ok.login_success'),
-      token,
+      accessToken,
+      refreshToken,
+      expiresIn: 900, // 15 minutos en segundos
       user: {
         id: user.id,
         email: user.email,
@@ -404,6 +417,110 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json(req.t('auth.error.invalid_refresh_token'));
+    }
+
+    // Verificar el refresh token
+    const decoded = verifyRefreshToken(refreshToken);
+    const user = await User.findByPk(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json(req.t('auth.error.invalid_refresh_token'));
+    }
+
+    // Verificar que el token coincide con el guardado en DB
+    if (user.refreshToken !== refreshToken) {
+      return res.status(401).json(req.t('auth.error.invalid_refresh_token'));
+    }
+
+    // Verificar que no ha expirado
+    if (user.refreshTokenExpires && new Date() > user.refreshTokenExpires) {
+      return res.status(401).json(req.t('auth.error.refresh_token_expired'));
+    }
+
+    // Verificar tokenVersion (logout global)
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json(req.t('auth.error.session_invalidated'));
+    }
+
+    // Generar NUEVOS tokens (rotación)
+    const newAccessToken = generateAccessToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    });
+
+    const newRefreshToken = generateRefreshToken({
+      userId: user.id,
+      tokenVersion: user.tokenVersion
+    });
+
+    // Actualizar en DB
+    user.refreshToken = newRefreshToken;
+    user.refreshTokenExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    await user.save();
+
+    res.json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      expiresIn: 900
+    });
+  } catch (error) {
+    console.error('Error en refresh token:', error);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json(req.t('auth.error.refresh_token_expired'));
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json(req.t('auth.error.invalid_refresh_token'));
+    }
+    res.status(500).json(req.t('general.error.server_error'));
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId);
+    
+    if (user) {
+      // Invalidar refresh token
+      user.refreshToken = null;
+      user.refreshTokenExpires = null;
+      await user.save();
+    }
+
+    res.json(req.t('auth.ok.logout_success'));
+  } catch (error) {
+    console.error('Error en logout:', error);
+    res.status(500).json(req.t('general.error.server_error'));
+  }
+};
+
+const logoutAllDevices = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId);
+    
+    if (!user) {
+      return res.status(404).json(req.t('auth.error.account_not_found'));
+    }
+
+    // Incrementar tokenVersion invalida TODOS los refresh tokens
+    user.tokenVersion += 1;
+    user.refreshToken = null;
+    user.refreshTokenExpires = null;
+    await user.save();
+
+    res.json(req.t('auth.ok.logout_all_success'));
+  } catch (error) {
+    console.error('Error en logout all devices:', error);
+    res.status(500).json(req.t('general.error.server_error'));
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -415,5 +532,8 @@ module.exports = {
   verifyEmailChange,
   deactivateAccount,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  refreshToken,
+  logout,
+  logoutAllDevices
 };
