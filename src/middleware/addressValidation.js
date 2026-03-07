@@ -1,6 +1,6 @@
 /**
  * MontarAI Backend - API REST
- * Copyright (C) 2024
+ * Copyright (C) 2026
  *
  * Validaciones de direcciones con soporte i18n
  */

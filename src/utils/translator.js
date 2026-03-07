@@ -1,6 +1,6 @@
 /**
  * MontarAI Backend - API REST
- * Copyright (C) 2024
+ * Copyright (C) 2026
  */
 
 const { locales, defaultLocale } = require('../locales');

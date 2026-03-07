@@ -1,6 +1,6 @@
 /**
  * MontarAI Backend - API REST
- * Copyright (C) 2024
+ * Copyright (C) 2026
  *
  * Configuración dinámica de marca/aplicación
  * Permite reutilizar el backend en múltiples proyectos
