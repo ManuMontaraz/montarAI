@@ -347,7 +347,7 @@ El sistema utiliza ** JWT con Refresh Tokens ** para una autenticación segura:
 - ** Logout global **: Posibilidad de cerrar sesión en todos los dispositivos
 - ** Invalidación server - side **: Los refresh tokens se guardan en la base de datos
 
-** Implementación Frontend(Recomendada): **
+** Implementación Frontend (Opción 1 - Axios): **
 
 ```javascript
 // Almacenar tokens después del login
@@ -386,6 +386,120 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+```
+
+** Implementación Frontend (Opción 2 - Fetch API nativo): **
+
+```javascript
+// Login con fetch
+const login = async (email, password) => {
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  
+  const data = await response.json();
+  
+  if (response.ok) {
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('expiresAt', Date.now() + data.expiresIn * 1000);
+    return data;
+  }
+  
+  throw new Error(data.message);
+};
+
+// Función fetch con renovación automática de tokens
+const fetchWithAuth = async (url, options = {}) => {
+  const accessToken = localStorage.getItem('accessToken');
+  
+  const config = {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  
+  let response = await fetch(url, config);
+  
+  // Si token expiró (401), intentar renovar
+  if (response.status === 401) {
+    const newToken = await refreshAccessToken();
+    
+    if (newToken) {
+      // Reintentar con nuevo token
+      config.headers['Authorization'] = `Bearer ${newToken}`;
+      response = await fetch(url, config);
+    } else {
+      // Refresh falló, redirigir a login
+      localStorage.clear();
+      window.location.href = '/login';
+      throw new Error('Session expired');
+    }
+  }
+  
+  return response;
+};
+
+// Función para renovar el access token
+const refreshAccessToken = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  
+  try {
+    const response = await fetch('/api/auth/refresh-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('expiresAt', Date.now() + data.expiresIn * 1000);
+      return data.accessToken;
+    }
+  } catch (error) {
+    console.error('Refresh failed:', error);
+  }
+  
+  return null;
+};
+
+// Ejemplos de uso:
+
+// Obtener perfil del usuario
+const getProfile = async () => {
+  const response = await fetchWithAuth('/api/auth/me');
+  return await response.json();
+};
+
+// Actualizar perfil
+const updateProfile = async (profileData) => {
+  const response = await fetchWithAuth('/api/auth/profile', {
+    method: 'PUT',
+    body: JSON.stringify(profileData)
+  });
+  return await response.json();
+};
+
+// Cerrar sesión
+const logout = async () => {
+  await fetchWithAuth('/api/auth/logout', { method: 'POST' });
+  localStorage.clear();
+  window.location.href = '/login';
+};
+
+// Cerrar sesión en todos los dispositivos
+const logoutAllDevices = async () => {
+  await fetchWithAuth('/api/auth/logout-all-devices', { method: 'POST' });
+  localStorage.clear();
+  window.location.href = '/login';
+};
 ```
 
 #### POST /auth/register
