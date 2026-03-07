@@ -9,7 +9,7 @@ const getAddresses = async (req, res) => {
     res.json({ addresses });
   } catch (error) {
     console.error('Error obteniendo direcciones:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -20,13 +20,13 @@ const getAddressById = async (req, res) => {
     });
 
     if (!address) {
-      return res.status(404).json({ message: 'Dirección no encontrada' });
+      return res.status(404).json(req.t('addresses.error.not_found'));
     }
 
     res.json({ address });
   } catch (error) {
     console.error('Error obteniendo dirección:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -56,12 +56,12 @@ const createAddress = async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Dirección creada correctamente',
+      ...req.t('addresses.ok.created'),
       address
     });
   } catch (error) {
     console.error('Error creando dirección:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -73,7 +73,7 @@ const updateAddress = async (req, res) => {
     });
 
     if (!address) {
-      return res.status(404).json({ message: 'Dirección no encontrada' });
+      return res.status(404).json(req.t('addresses.error.not_found'));
     }
 
     const { street, number, floor, door, city, postalCode, province, country, isDefault } = req.body;
@@ -98,12 +98,12 @@ const updateAddress = async (req, res) => {
     });
 
     res.json({
-      message: 'Dirección actualizada correctamente',
+      ...req.t('addresses.ok.updated'),
       address
     });
   } catch (error) {
     console.error('Error actualizando dirección:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -114,14 +114,14 @@ const deleteAddress = async (req, res) => {
     });
 
     if (!address) {
-      return res.status(404).json({ message: 'Dirección no encontrada' });
+      return res.status(404).json(req.t('addresses.error.not_found'));
     }
 
     await address.destroy();
-    res.json({ message: 'Dirección eliminada correctamente' });
+    res.json(req.t('addresses.ok.deleted'));
   } catch (error) {
     console.error('Error eliminando dirección:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -132,7 +132,7 @@ const setDefaultAddress = async (req, res) => {
     });
 
     if (!address) {
-      return res.status(404).json({ message: 'Dirección no encontrada' });
+      return res.status(404).json(req.t('addresses.error.not_found'));
     }
 
     await Address.update(
@@ -143,12 +143,12 @@ const setDefaultAddress = async (req, res) => {
     await address.update({ isDefault: true });
 
     res.json({
-      message: 'Dirección por defecto actualizada',
+      ...req.t('addresses.ok.default_set'),
       address
     });
   } catch (error) {
     console.error('Error estableciendo dirección por defecto:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 

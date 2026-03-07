@@ -15,7 +15,7 @@ const getDashboardStats = async (req, res) => {
     
     const ordersToday = await Order.count({
       where: {
-        createdAt: { [Op.gte]: today }
+        created_at: { [Op.gte]: today }
       }
     });
 
@@ -54,7 +54,7 @@ const getDashboardStats = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo estadísticas:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -94,7 +94,7 @@ const getAllOrders = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo pedidos:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -115,13 +115,13 @@ const getOrderDetails = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('admin.error.order_not_found'));
     }
 
     res.json({ order });
   } catch (error) {
     console.error('Error obteniendo detalle del pedido:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -131,7 +131,7 @@ const updateOrderStatus = async (req, res) => {
     
     const order = await Order.findByPk(req.params.id);
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('admin.error.order_not_found'));
     }
 
     const updates = { status };
@@ -148,12 +148,12 @@ const updateOrderStatus = async (req, res) => {
     await order.update(updates);
 
     res.json({
-      message: 'Estado del pedido actualizado',
+      ...req.t('admin.ok.order_updated'),
       order
     });
   } catch (error) {
     console.error('Error actualizando pedido:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -183,7 +183,7 @@ const getAllCustomers = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo clientes:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -202,13 +202,13 @@ const getUserDetails = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json(req.t('admin.error.user_not_found'));
     }
 
     res.json({ user });
   } catch (error) {
     console.error('Error obteniendo detalles del usuario:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -217,16 +217,16 @@ const updateUserStatus = async (req, res) => {
     const { status, reason } = req.body;
 
     if (!['active', 'inactive', 'banned'].includes(status)) {
-      return res.status(400).json({ message: 'Estado inválido. Use: active, inactive, banned' });
+      return res.status(400).json(req.t('admin.error.invalid_status'));
     }
 
     const user = await User.findByPk(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json(req.t('admin.error.user_not_found'));
     }
 
     if (user.role === 'admin') {
-      return res.status(403).json({ message: 'No se puede modificar el estado de un administrador' });
+      return res.status(403).json(req.t('admin.error.cannot_modify_admin'));
     }
 
     await user.update({ 
@@ -234,19 +234,18 @@ const updateUserStatus = async (req, res) => {
       statusReason: reason || null
     });
 
-    // Enviar email al usuario sobre el cambio de estado
     const { sendEmail } = require('../services/email');
     
     let subject, message;
     if (status === 'banned') {
-      subject = 'Tu cuenta ha sido suspendida';
-      message = `Tu cuenta ha sido suspendida${reason ? ` por la siguiente razón: ${reason}` : '.'} Si crees que esto es un error, contacta con soporte.`;
+      subject = req.t('mail.account_status.banned_subject');
+      message = req.t('mail.account_status.banned_body');
     } else if (status === 'inactive') {
-      subject = 'Tu cuenta ha sido desactivada';
-      message = `Tu cuenta ha sido desactivada${reason ? ` por la siguiente razón: ${reason}` : '.'}`;
+      subject = req.t('mail.account_status.inactive_subject');
+      message = req.t('mail.account_status.inactive_body');
     } else {
-      subject = 'Tu cuenta ha sido reactivada';
-      message = 'Tu cuenta ha sido reactivada. Ya puedes iniciar sesión nuevamente.';
+      subject = req.t('mail.account_status.active_subject');
+      message = req.t('mail.account_status.active_body');
     }
 
     await sendEmail({
@@ -261,7 +260,7 @@ const updateUserStatus = async (req, res) => {
     });
 
     res.json({
-      message: `Estado del usuario actualizado a: ${status}`,
+      ...req.t('admin.ok.user_updated'),
       user: {
         id: user.id,
         email: user.email,
@@ -270,7 +269,7 @@ const updateUserStatus = async (req, res) => {
     });
   } catch (error) {
     console.error('Error actualizando estado del usuario:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -303,7 +302,7 @@ const getRefundRequests = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo solicitudes de devolución:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -322,21 +321,19 @@ const approveRefund = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('admin.error.order_not_found'));
     }
 
     if (order.refundStatus !== 'requested') {
-      return res.status(400).json({ message: 'No hay una solicitud de devolución pendiente para este pedido' });
+      return res.status(400).json(req.t('orders.error.refund_pending'));
     }
 
-    // Procesar reembolso en Stripe
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const refund = await stripe.refunds.create({
       payment_intent: order.stripePaymentIntentId,
       reason: 'requested_by_customer'
     });
 
-    // Actualizar orden
     await order.update({
       refundStatus: 'approved',
       refundAmount: order.totalAmount,
@@ -345,22 +342,21 @@ const approveRefund = async (req, res) => {
       status: 'refunded'
     });
 
-    // Enviar email al cliente
     const { sendEmail } = require('../services/email');
     await sendEmail({
       to: order.user.email,
-      subject: 'Proceso de devolución iniciado',
+      subject: req.t('mail.refund.subject'),
       html: `
-        <h1>Proceso de devolución iniciado</h1>
+        <h1>${req.t('mail.refund.subject')}</h1>
         <p>Hola ${order.user.firstName},</p>
-        <p>Se ha iniciado el proceso de devolución para tu pedido #${order.id}.</p>
-        <p>El reembolso se procesará en los próximos 5-10 días hábiles.</p>
-        <p><strong>Importe reembolsado:</strong> ${order.totalAmount} €</p>
+        <p>${req.t('mail.refund.body', { orderId: order.id })}</p>
+        <p>${req.t('mail.refund.timeline')}</p>
+        <p><strong>${req.t('mail.refund.amount')}</strong> ${order.totalAmount} €</p>
       `
     });
 
     res.json({
-      message: 'Devolución aprobada y procesada correctamente',
+      ...req.t('admin.ok.refund_approved'),
       order: {
         id: order.id,
         refundStatus: order.refundStatus,
@@ -370,7 +366,7 @@ const approveRefund = async (req, res) => {
     });
   } catch (error) {
     console.error('Error aprobando devolución:', error);
-    res.status(500).json({ message: 'Error procesando la devolución' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -390,36 +386,34 @@ const rejectRefund = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('admin.error.order_not_found'));
     }
 
     if (order.refundStatus !== 'requested') {
-      return res.status(400).json({ message: 'No hay una solicitud de devolución pendiente para este pedido' });
+      return res.status(400).json(req.t('orders.error.refund_pending'));
     }
 
-    // Actualizar orden
     await order.update({
       refundStatus: 'rejected',
-      refundRejectionReason: reason || 'No especificado',
+      refundRejectionReason: reason || req.t('general.no_reason'),
       status: order.status === 'refund_requested' ? 'delivered' : order.status
     });
 
-    // Enviar email al cliente
     const { sendEmail } = require('../services/email');
     await sendEmail({
       to: order.user.email,
-      subject: 'Solicitud de devolución rechazada',
+      subject: req.t('mail.refund_rejected.subject'),
       html: `
-        <h1>Solicitud de devolución rechazada</h1>
+        <h1>${req.t('mail.refund_rejected.subject')}</h1>
         <p>Hola ${order.user.firstName},</p>
-        <p>Tu solicitud de devolución para el pedido #${order.id} ha sido rechazada.</p>
-        ${reason ? `<p><strong>Motivo:</strong> ${reason}</p>` : ''}
-        <p>Si tienes alguna duda, contacta con nuestro equipo de soporte.</p>
+        <p>${req.t('mail.refund_rejected.body', { orderId: order.id })}</p>
+        ${reason ? `<p><strong>${req.t('mail.refund_rejected.reason')}</strong> ${reason}</p>` : ''}
+        <p>${req.t('mail.refund_rejected.contact')}</p>
       `
     });
 
     res.json({
-      message: 'Solicitud de devolución rechazada',
+      ...req.t('admin.ok.refund_rejected'),
       order: {
         id: order.id,
         refundStatus: order.refundStatus,
@@ -428,7 +422,7 @@ const rejectRefund = async (req, res) => {
     });
   } catch (error) {
     console.error('Error rechazando devolución:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 

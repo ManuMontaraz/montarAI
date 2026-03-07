@@ -17,7 +17,7 @@ const getMyOrders = async (req, res) => {
     res.json({ orders });
   } catch (error) {
     console.error('Error obteniendo pedidos:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -37,13 +37,13 @@ const getOrderById = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('orders.error.not_found'));
     }
 
     res.json({ order });
   } catch (error) {
     console.error('Error obteniendo pedido:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 
@@ -59,32 +59,29 @@ const requestRefund = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: 'Pedido no encontrado' });
+      return res.status(404).json(req.t('orders.error.not_found'));
     }
 
-    // Verificar que el pedido esté pagado
     if (order.status !== 'paid' && order.status !== 'delivered') {
-      return res.status(400).json({ message: 'Solo se pueden solicitar devoluciones de pedidos pagados o entregados' });
+      return res.status(400).json(req.t('orders.error.cannot_refund'));
     }
 
-    // Verificar que no haya una solicitud pendiente
     if (order.refundStatus === 'requested') {
-      return res.status(400).json({ message: 'Ya existe una solicitud de devolución pendiente para este pedido' });
+      return res.status(400).json(req.t('orders.error.refund_pending'));
     }
 
-    // Verificar que no esté ya reembolsado
     if (order.refundStatus === 'approved') {
-      return res.status(400).json({ message: 'Este pedido ya ha sido reembolsado' });
+      return res.status(400).json(req.t('orders.error.already_refunded'));
     }
 
     await order.update({
       refundStatus: 'requested',
-      refundReason: reason || 'No especificado',
+      refundReason: reason || req.t('general.no_reason'),
       status: 'refund_requested'
     });
 
     res.json({
-      message: 'Solicitud de devolución enviada correctamente',
+      ...req.t('orders.ok.refund_requested'),
       order: {
         id: order.id,
         status: order.status,
@@ -94,7 +91,7 @@ const requestRefund = async (req, res) => {
     });
   } catch (error) {
     console.error('Error solicitando devolución:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    res.status(500).json(req.t('general.error.server_error'));
   }
 };
 

@@ -15,6 +15,7 @@ const register = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
     const verificationToken = generateVerificationToken();
+    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
 
     const user = await User.create({
       email,
@@ -22,7 +23,8 @@ const register = async (req, res) => {
       firstName,
       lastName,
       phone,
-      verificationToken
+      verificationToken,
+      verificationTokenExpires: tokenExpires
     });
 
     await sendVerificationEmail(email, verificationToken, req.lang, { firstName });
@@ -57,7 +59,20 @@ const login = async (req, res) => {
     }
 
     if (!user.isVerified) {
-      return res.status(401).json(req.t('auth.error.account_not_verified'));
+      // Generar nuevo token y reenviar email de verificación
+      const newVerificationToken = generateVerificationToken();
+      user.verificationToken = newVerificationToken;
+      user.verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+      await user.save();
+
+      await sendVerificationEmail(user.email, newVerificationToken, req.lang, { 
+        firstName: user.firstName 
+      });
+
+      return res.status(401).json({
+        ...req.t('auth.error.account_not_verified'),
+        resent: true
+      });
     }
 
     if (user.status === 'inactive') {
@@ -189,6 +204,7 @@ const verifyEmail = async (req, res) => {
 
     user.isVerified = true;
     user.verificationToken = null;
+    user.verificationTokenExpires = null;
     await user.save();
 
     const html = generateVerifyEmailHtml(

@@ -7,7 +7,7 @@ const listProducts = async (req, res) => {
     const params = {
       active: true,
       expand: ['data.default_price'],
-      limit: Math.min(parseInt(limit), 100) // Máximo 100 por página
+      limit: Math.min(parseInt(limit), 100)
     };
 
     if (starting_after) {
@@ -44,7 +44,7 @@ const listProducts = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo productos:', error);
-    res.status(500).json({ message: 'Error obteniendo productos' });
+    res.status(500).json(req.t('stripe.error.products_fetch'));
   }
 };
 
@@ -73,7 +73,7 @@ const getProduct = async (req, res) => {
     });
   } catch (error) {
     console.error('Error obteniendo producto:', error);
-    res.status(500).json({ message: 'Error obteniendo producto' });
+    res.status(500).json(req.t('stripe.error.product_fetch'));
   }
 };
 
@@ -82,7 +82,7 @@ const createPaymentIntent = async (req, res) => {
     const { items, shippingAddressId } = req.body;
 
     if (!items || !items.length) {
-      return res.status(400).json({ message: 'El carrito está vacío' });
+      return res.status(400).json(req.t('stripe.error.cart_empty'));
     }
 
     const { Address } = require('../models');
@@ -91,7 +91,7 @@ const createPaymentIntent = async (req, res) => {
     });
 
     if (!address) {
-      return res.status(400).json({ message: 'Dirección de envío no válida' });
+      return res.status(400).json(req.t('stripe.error.invalid_address'));
     }
 
     let totalAmount = 0;
@@ -124,7 +124,7 @@ const createPaymentIntent = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creando payment intent:', error);
-    res.status(500).json({ message: 'Error procesando el pago' });
+    res.status(500).json(req.t('stripe.error.payment_intent'));
   }
 };
 

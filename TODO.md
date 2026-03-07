@@ -108,6 +108,46 @@
 - [x] Añadir traducciones para nuevos mensajes de error y éxito
 - [x] Actualizar rutas en src/routes/auth.js
 
+## FASE 15: Limpieza Automática de Usuarios No Verificados
+- [x] **Variables de entorno** (.env.example):
+  - `CLEANUP_UNVERIFIED_ENABLED=true`
+  - `CLEANUP_UNVERIFIED_HOURS=48` (borrar después de X horas)
+  
+- [x] **Modificar modelo User** (src/models/User.js):
+  - Añadir campo `verificationTokenExpires` (DATE, nullable)
+  - Actualizar índices si es necesario
+  
+- [x] **Actualizar registro** (src/controllers/authController.js):
+  - Generar `verificationTokenExpires` al crear usuario (now + 24h)
+  
+- [x] **Actualizar verificación de email** (src/controllers/authController.js):
+  - Limpiar `verificationTokenExpires` al verificar email
+  
+- [x] **Modificar login** (src/controllers/authController.js):
+  - Si usuario no verificado:
+    - Generar nuevo token de verificación
+    - Actualizar `verificationTokenExpires`
+    - Reenviar email de verificación automáticamente
+    - Retornar error indicando que debe verificar email
+  
+- [x] **Crear cron job** (src/jobs/cleanupUnverifiedUsers.js):
+  - Instalar dependencia: `npm install node-cron`
+  - Ejecutar cada hora
+  - Buscar usuarios: `isVerified=false` AND `created_at < NOW() - INTERVAL X HOURS`
+  - Eliminar en batch con logging
+  
+- [x] **Integrar cron job** (src/app.js):
+  - Importar job
+  - Inicializar después de conectar a BD
+  
+- [x] **Añadir traducciones**:
+  - Mensaje: "Email de verificación reenviado. Por favor revisa tu correo"
+  - Email subject/body para reenvío
+  
+- [x] **Testing**:
+  - Registrar usuario, no verificar, esperar X horas (o forzar fecha), verificar que se elimina
+  - Intentar login sin verificar, confirmar que reenvía email
+
 ## DEPLOY (Documentación completa en README.md)
 - [x] Guía de despliegue Debian + Apache
 - [x] Configuración PM2 para producción

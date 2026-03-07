@@ -4,7 +4,7 @@
       "account_not_found": "Cuenta no encontrada",
       "invalid_credentials": "Credenciales inválidas",
       "email_already_exists": "El email ya está registrado",
-      "account_not_verified": "Por favor verifica tu email antes de iniciar sesión",
+      "account_not_verified": "Por favor verifica tu email antes de iniciar sesión. Se ha reenviado el email de verificación.",
       "account_inactive": "Cuenta desactivada. Contacta con soporte para reactivarla",
       "account_banned": "Cuenta suspendida por violación de términos",
       "token_invalid": "Token inválido",
@@ -168,6 +168,7 @@
     },
     "ok": {
       "success": "Operación exitosa"
-    }
+    },
+    "no_reason": "No especificado"
   }
 }

@@ -66,6 +66,11 @@ const User = sequelize.define('User', {
     allowNull: true,
     field: 'verification_token'
   },
+  verificationTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'verification_token_expires'
+  },
   resetPasswordToken: {
     type: DataTypes.STRING(255),
     allowNull: true,

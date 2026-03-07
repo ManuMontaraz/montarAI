@@ -27,6 +27,7 @@ const orderRoutes = require('./routes/orders');
 const stripeRoutes = require('./routes/stripe');
 const adminRoutes = require('./routes/admin');
 const { i18nMiddleware } = require('./middleware/i18n');
+const { startCleanupJob } = require('./jobs/cleanupUnverifiedUsers');
 
 const sequelize = require('./config/database');
 
@@ -64,6 +65,9 @@ const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log('✅ Conexión a MySQL establecida correctamente');
+    
+    // Iniciar cron job de limpieza de usuarios no verificados
+    startCleanupJob();
     
     app.listen(PORT, () => {
       console.log(`🚀 Servidor corriendo en puerto ${PORT}`);

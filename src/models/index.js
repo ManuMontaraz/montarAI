@@ -8,6 +8,7 @@
  * (at your option) any later version.
  */
 
+const sequelize = require('../config/database');
 const User = require('./User');
 const Address = require('./Address');
 const Order = require('./Order');
@@ -25,5 +26,6 @@ Order.belongsTo(Address, { foreignKey: 'shippingAddressId', as: 'shippingAddress
 module.exports = {
   User,
   Address,
-  Order
+  Order,
+  sequelize
 };
