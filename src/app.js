@@ -34,7 +34,26 @@ const sequelize = require('./config/database');
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS 
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origen no permitido por CORS'));
+    }
+  },
+  credentials: process.env.CORS_CREDENTIALS === 'true',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Accept-Language'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id']
+};
+
+app.use(cors(corsOptions));
 
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 
