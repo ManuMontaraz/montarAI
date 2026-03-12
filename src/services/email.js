@@ -147,7 +147,7 @@ const sendVerificationEmail = async (email, token, lang = 'en', user = {}) => {
 };
 
 const sendPasswordResetEmail = async (email, token, lang = 'en', user = {}) => {
-  const resetUrl = `${appConfig.url}/reset-password?token=${token}`;
+  const resetUrl = `${appConfig.url}/api/auth/reset-password?token=${encodeURIComponent(token)}`;
   
   const content = `
     <h1 style="color: ${appConfig.branding.primaryColor};">${translate('mail.reset_password.salute', lang, { firstName: user.firstName || '' })}</h1>
@@ -224,11 +224,33 @@ const sendRefundRejectionEmail = async (email, orderDetails, reason, lang = 'en'
   });
 };
 
+const sendNewsletterEmail = async (email, subject, content, unsubscribeToken, lang = 'en', user = {}) => {
+  const unsubscribeUrl = `${appConfig.url}/api/newsletters/unsubscribe?token=${unsubscribeToken}`;
+  
+  const emailContent = `
+    <div style="background: white; padding: 20px; border-radius: 5px;">
+      ${content}
+    </div>
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; font-size: 12px; color: #666;">
+      <p>${translate('mail.newsletter.unsubscribe_text', lang)}</p>
+      <a href="${unsubscribeUrl}" style="color: ${appConfig.branding.primaryColor};">${translate('mail.newsletter.unsubscribe_link', lang)}</a>
+    </div>
+  `;
+  
+  return await sendEmail({
+    to: email,
+    subject,
+    html: emailContent,
+    lang
+  });
+};
+
 module.exports = {
   sendEmail,
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendOrderConfirmationEmail,
   sendRefundConfirmationEmail,
-  sendRefundRejectionEmail
+  sendRefundRejectionEmail,
+  sendNewsletterEmail
 };

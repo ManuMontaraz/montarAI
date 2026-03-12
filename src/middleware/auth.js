@@ -43,7 +43,37 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware de autenticación opcional
+ * Si hay token válido, añade req.user
+ * Si no hay token o es inválido, continúa sin error
+ */
+const authenticateOptional = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return next();
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await User.findByPk(decoded.userId);
+    if (!user || user.status !== 'active') {
+      return next();
+    }
+    
+    req.user = decoded;
+    next();
+  } catch (error) {
+    // Token inválido o expirado, continuar sin usuario
+    next();
+  }
+};
+
 module.exports = {
   authenticate,
+  authenticateOptional,
   requireAdmin
 };

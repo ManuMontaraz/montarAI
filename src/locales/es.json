@@ -38,6 +38,22 @@
       "success_title": "Email Verificado Correctamente",
       "error_title": "Verificación Fallida",
       "close_message": "Puedes cerrar esta pestaña"
+    },
+    "reset_password_page": {
+      "title": "Restablecer Contraseña",
+      "form_title": "Crear Nueva Contraseña",
+      "new_password_label": "Nueva contraseña",
+      "confirm_password_label": "Confirmar contraseña",
+      "submit_button": "Restablecer Contraseña",
+      "password_mismatch": "Las contraseñas no coinciden",
+      "password_too_short": "La contraseña debe tener al menos 6 caracteres",
+      "success_title": "Contraseña Actualizada",
+      "success_message": "Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión.",
+      "error_title": "Error",
+      "error_invalid_token": "El enlace es inválido o ha expirado",
+      "error_generic": "Ha ocurrido un error al restablecer la contraseña",
+      "go_to_login": "Contraseña actualizada correctamente",
+      "close_message": "Puedes cerrar esta pestaña"
     }
   },
   "validation": {
@@ -147,6 +163,10 @@
       "active_subject": "Tu cuenta ha sido reactivada - {appName}",
       "active_body": "Tu cuenta ha sido reactivada. Ya puedes iniciar sesión nuevamente."
     },
+    "newsletter": {
+      "unsubscribe_text": "Si no deseas recibir más newsletters, puedes desuscribirte aquí:",
+      "unsubscribe_link": "Desuscribirse"
+    },
     "footer": {
       "social_title": "Síguenos en:",
       "company_info": "{companyName} - {companyAddress}",
@@ -156,6 +176,24 @@
       "privacy": "Política de privacidad",
       "legal": "Aviso legal",
       "cookies": "Política de cookies"
+    }
+  },
+  "newsletter": {
+    "error": {
+      "email_required": "El email es obligatorio",
+      "unsubscribe_email_required": "Proporciona tu email o inicia sesión para desuscribirte",
+      "already_subscribed": "Ya estás suscrito al newsletter",
+      "not_subscribed": "No estás suscrito al newsletter",
+      "email_not_found": "No encontramos una cuenta con ese email",
+      "send_error": "Error enviando el newsletter"
+    },
+    "ok": {
+      "subscribe_success": "Te has suscrito al newsletter correctamente",
+      "unsubscribe_success": "Te has desuscrito del newsletter correctamente",
+      "subscription_pending": "Para recibir newsletters, crea una cuenta con este email",
+      "test_sent": "Email de prueba enviado correctamente",
+      "no_subscribers": "No hay suscriptores activos",
+      "sent_success": "Newsletter enviado correctamente"
     }
   },
   "general": {

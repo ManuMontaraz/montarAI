@@ -379,6 +379,96 @@ Rechaza una solicitud de devolución.
 
 ---
 
+## 📧 NEWSLETTER ENDPOINTS
+
+### POST /newsletters/subscribe
+Suscribe un email al newsletter. Puede usarse con o sin autenticación.
+
+**Auth:** Opcional (JWT)
+
+**Body (sin auth):**
+```json
+{
+  "email": "usuario@ejemplo.com"
+}
+```
+
+**Body (con auth):**
+```json
+{}
+```
+
+**Respuesta exitosa:**
+```json
+{
+  "key": "subscription_success",
+  "message": "Te has suscrito al newsletter correctamente",
+  "lang": "es"
+}
+```
+
+---
+
+### POST /newsletters/unsubscribe
+Desuscribe un email del newsletter. Puede usarse con o sin autenticación.
+
+**Auth:** Opcional (JWT)
+
+**Body (sin auth):**
+```json
+{
+  "email": "usuario@ejemplo.com"
+}
+```
+
+**Body (con auth):**
+```json
+{}
+```
+
+**Respuesta exitosa:**
+```json
+{
+  "key": "unsubscribe_success",
+  "message": "Te has desuscrito del newsletter correctamente",
+  "lang": "es"
+}
+```
+
+---
+
+### POST /newsletters/send
+Envía un newsletter a todos los suscriptores. Solo administradores.
+
+**Auth:** Requerido (Admin)
+
+**Body:**
+```json
+{
+  "subject": "Ofertas de verano",
+  "content": "<h1>Hola!</h1><p>Nuestras ofertas...</p>",
+  "testEmail": "prueba@ejemplo.com"
+}
+```
+
+**Nota:** `testEmail` es opcional. Si se proporciona, solo envía a esa dirección.
+
+**Respuesta exitosa:**
+```json
+{
+  "key": "newsletter_sent",
+  "message": "Newsletter enviado correctamente",
+  "stats": {
+    "total": 150,
+    "sent": 148,
+    "failed": 2
+  },
+  "lang": "es"
+}
+```
+
+---
+
 ## 🏥 HEALTH CHECK
 
 ### GET /health

@@ -148,6 +148,44 @@
   - Registrar usuario, no verificar, esperar X horas (o forzar fecha), verificar que se elimina
   - Intentar login sin verificar, confirmar que reenvía email
 
+## FASE 16: Sistema de Newsletter (Boletín)
+- [x] **Modificar modelo User** (src/models/User.js):
+  - Añadir campo `newsletterSubscribed` (BOOLEAN, default: true)
+  - Añadir campo `newsletterSubscribedAt` (DATE, nullable)
+  - Añadir campo `newsletterUnsubscribedAt` (DATE, nullable)
+  
+- [x] **Actualizar servicio de email** (src/services/email.js):
+  - Crear función `sendNewsletterEmail()` para envío masivo
+  - Añadir link de desuscripción en el footer
+  
+- [x] **Crear controlador** (src/controllers/newsletterController.js):
+  - `POST /newsletters/send` - Enviar newsletter a suscritos (admin)
+  - `POST /newsletters/subscribe` - Suscribirse (JWT opcional)
+  - `POST /newsletters/unsubscribe` - Desuscribirse (JWT o email)
+  
+- [x] **Crear rutas** (src/routes/newsletters.js):
+  - POST /send (protegido: admin)
+  - POST /subscribe (público, JWT opcional)
+  - POST /unsubscribe (público, JWT opcional)
+  
+- [x] **Añadir traducciones**:
+  - Mensajes de éxito/error para suscripción/descripción
+  - Email footer con link de desuscripción
+  - Mensaje de confirmación de envío
+  
+- [x] **Integrar en app.js**:
+  - Importar y usar rutas de newsletter
+  
+- [x] **Actualizar documentación**:
+  - Añadir endpoints a API.md
+  - Añadir endpoints a README.md
+  
+- [ ] **Testing**:
+  - Probar suscripción con JWT (usuario logueado)
+  - Probar suscripción con email (visitante)
+  - Probar envío de newsletter
+  - Probar desuscripción
+
 ## DEPLOY (Documentación completa en README.md)
 - [x] Guía de despliegue Debian + Apache
 - [x] Configuración PM2 para producción

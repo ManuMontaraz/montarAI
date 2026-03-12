@@ -18,6 +18,7 @@ router.post('/login', loginValidation, handleValidationErrors, authController.lo
 router.get('/me', authenticate, authController.getMe);
 router.get('/verify-email', authController.verifyEmail);
 router.post('/forgot-password', forgotPasswordValidation, handleValidationErrors, authController.forgotPassword);
+router.get('/reset-password', authController.showResetPasswordPage);
 router.post('/reset-password', resetPasswordValidation, handleValidationErrors, authController.resetPassword);
 
 // Nuevas rutas de gestión de perfil

@@ -768,6 +768,50 @@ Rechaza una solicitud de devolución.
 }
 ```
 
+### 📧 Newsletter
+
+#### POST /newsletters/subscribe
+Suscribe un email al newsletter (JWT opcional).
+
+**Body (sin auth):**
+```json
+{
+  "email": "usuario@ejemplo.com"
+}
+```
+
+**Body (con auth):**
+```json
+{}
+```
+
+#### POST /newsletters/unsubscribe
+Desuscribe un email del newsletter (JWT opcional).
+
+**Body (sin auth):**
+```json
+{
+  "email": "usuario@ejemplo.com"
+}
+```
+
+**Body (con auth):**
+```json
+{}
+```
+
+#### POST /newsletters/send
+Envía newsletter a suscriptores (solo admin).
+
+**Body:**
+```json
+{
+  "subject": "Ofertas de verano",
+  "content": "<h1>Hola!</h1><p>Contenido...</p>",
+  "testEmail": "prueba@ejemplo.com"
+}
+```
+
 ### 📊 Códigos de Error
 
 - `200`: OK - Petición exitosa

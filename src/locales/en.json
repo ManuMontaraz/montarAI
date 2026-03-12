@@ -38,6 +38,22 @@
       "success_title": "Email Verified Successfully",
       "error_title": "Verification Failed",
       "close_message": "You can close this tab"
+    },
+    "reset_password_page": {
+      "title": "Reset Password",
+      "form_title": "Create New Password",
+      "new_password_label": "New password",
+      "confirm_password_label": "Confirm password",
+      "submit_button": "Reset Password",
+      "password_mismatch": "Passwords do not match",
+      "password_too_short": "Password must be at least 6 characters",
+      "success_title": "Password Updated",
+      "success_message": "Your password has been reset successfully. You can now log in.",
+      "error_title": "Error",
+      "error_invalid_token": "The link is invalid or has expired",
+      "error_generic": "An error occurred while resetting the password",
+      "go_to_login": "Password updated successfully",
+      "close_message": "You can close this tab"
     }
   },
   "validation": {
@@ -147,6 +163,10 @@
       "active_subject": "Your account has been reactivated - {appName}",
       "active_body": "Your account has been reactivated. You can now log in again."
     },
+    "newsletter": {
+      "unsubscribe_text": "If you no longer wish to receive newsletters, you can unsubscribe here:",
+      "unsubscribe_link": "Unsubscribe"
+    },
     "footer": {
       "social_title": "Follow us on:",
       "company_info": "{companyName} - {companyAddress}",
@@ -156,6 +176,24 @@
       "privacy": "Privacy policy",
       "legal": "Legal notice",
       "cookies": "Cookie policy"
+    }
+  },
+  "newsletter": {
+    "error": {
+      "email_required": "Email is required",
+      "unsubscribe_email_required": "Please provide your email or log in to unsubscribe",
+      "already_subscribed": "You are already subscribed to the newsletter",
+      "not_subscribed": "You are not subscribed to the newsletter",
+      "email_not_found": "We couldn't find an account with that email",
+      "send_error": "Error sending newsletter"
+    },
+    "ok": {
+      "subscribe_success": "You have successfully subscribed to the newsletter",
+      "unsubscribe_success": "You have successfully unsubscribed from the newsletter",
+      "subscription_pending": "To receive newsletters, please create an account with this email",
+      "test_sent": "Test email sent successfully",
+      "no_subscribers": "No active subscribers",
+      "sent_success": "Newsletter sent successfully"
     }
   },
   "general": {

@@ -26,14 +26,29 @@ const addressRoutes = require('./routes/addresses');
 const orderRoutes = require('./routes/orders');
 const stripeRoutes = require('./routes/stripe');
 const adminRoutes = require('./routes/admin');
+const newsletterRoutes = require('./routes/newsletters');
 const { i18nMiddleware } = require('./middleware/i18n');
 const { startCleanupJob } = require('./jobs/cleanupUnverifiedUsers');
+const { serveDocs } = require('./middleware/docs');
 
 const sequelize = require('./config/database');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'sha256-8Ed3PT3ucy62J6RIRvDlT26vkb2MRLjZxg5CkYFFyBU='"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+}));
 
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS 
   ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
@@ -63,11 +78,15 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware de internacionalización
 app.use(i18nMiddleware);
 
+// Ruta raíz - Documentación API
+app.get('/', serveDocs);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/addresses', addressRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', stripeRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/newsletters', newsletterRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

@@ -96,6 +96,22 @@ const User = sequelize.define('User', {
     defaultValue: 0,
     allowNull: false,
     field: 'token_version'
+  },
+  newsletterSubscribed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+    allowNull: false,
+    field: 'newsletter_subscribed'
+  },
+  newsletterSubscribedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'newsletter_subscribed_at'
+  },
+  newsletterUnsubscribedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'newsletter_unsubscribed_at'
   }
 }, {
   tableName: 'users',
